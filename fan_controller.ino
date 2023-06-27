@@ -13,6 +13,8 @@ const char* password = "SecretPassword";  // Enter Password here
 float TARGET_TEMPERATURE = 30;  // Target temperature in °C
 int PWM_FANSPEED = 128;         // Range 0 - 255, start with ~ 50 %
 int PWM_STEPSIZE = 1;
+int PWM_MINSPEED = 128;         // minimal speed, must not be lower than
+                                // 51 Noctua fans (lower limit 20%)
 float temperature;
 float previous_temperature;     // store previous temperature
 
@@ -88,9 +90,9 @@ void loop() {
   else {
     Serial.print((String)", Temperature lower than " + TARGET_TEMPERATURE + " °C, ");
     PWM_FANSPEED = PWM_FANSPEED - PWM_STEPSIZE;  // lower fan speed
-    PWM_FANSPEED = max(PWM_FANSPEED, 51);        // select larger value to ensure it never
-                                                 // goes below 0 (invalid), 51 is now minimum
-                                                 // as Noctuas lower limit is 20%
+    PWM_FANSPEED = max(PWM_FANSPEED, PWM_MINSPEED); // select larger value to ensure it never
+                                                    // goes below 0 (invalid), 51 is now minimum
+                                                    // as Noctuas lower limit is 20%
   }
 
   Serial.println((String)"Fan speed: " + PWM_FANSPEED);
